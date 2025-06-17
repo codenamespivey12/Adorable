@@ -12,13 +12,19 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   devIndicators: false,
-  webpack(config) {
+  webpack(config, { isServer }) {
     // Skip optional Cloudflare sockets imports used by pg-cloudflare.
+    config.externals = config.externals || [];
+    if (isServer) {
+      config.externals.push('cloudflare:sockets');
+    }
+    
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       'cloudflare:sockets': false,
     };
+    
     return config;
   },
 };
