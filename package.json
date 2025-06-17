@@ -75,5 +75,6 @@
     "tsx": "^4.19.3",
     "typescript": "^5"
   },
+  "packageManager": "pnpm@10.12.1",
   "type": "binary"
 }
