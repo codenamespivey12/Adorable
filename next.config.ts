@@ -9,21 +9,22 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    viewTransition: true,
+    serverComponentsExternalPackages: ["pg", "pg-cloudflare"],
   },
-  devIndicators: false,
-  webpack(config, { isServer }) {
-    // Skip optional Cloudflare sockets imports used by pg-cloudflare.
-    config.externals = config.externals || [];
-    if (isServer) {
-      config.externals.push('cloudflare:sockets');
-    }
-    
-    config.resolve = config.resolve || {};
+  devIndicators: {
+    appIsrStatus: false,
+  },
+  webpack: (config, { isServer }) => {
+    // Handle cloudflare:sockets import issue
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      'cloudflare:sockets': false,
+      ...config.resolve.alias,
+      "cloudflare:sockets": false,
     };
+    
+    // Externalize problematic packages for server builds
+    if (isServer) {
+      config.externals = [...config.externals, "pg-native", "cloudflare:sockets"];
+    }
     
     return config;
   },
