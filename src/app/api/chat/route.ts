@@ -5,6 +5,14 @@ import { MCPClient } from "@mastra/mcp";
 import { builderAgent } from "@/mastra/agents/builder";
 import { deleteStream, getStream, setStream } from "@/lib/streams";
 import { CoreMessage } from "@mastra/core";
+import { getApp } from "@/actions/get-app";
+
+// Access global streams
+declare global {
+  var streams: Record<string, { readable: ReadableStream; prompt?: string }>;
+}
+
+const streams = globalThis.streams || {};
 
 // "fix" mastra mcp bug
 import { EventEmitter } from "events";
