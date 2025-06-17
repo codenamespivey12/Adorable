@@ -1,4 +1,4 @@
-CREATE TYPE "public"."app_user_permission" AS ENUM('read', 'write', 'admin');--> statement-breakpoint
+CREATE TYPE IF NOT EXISTS "public"."app_user_permission" AS ENUM('read', 'write', 'admin');--> statement-breakpoint
 CREATE TABLE "app_deployments" (
 	"app_id" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
