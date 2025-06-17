@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   devIndicators: false,
+  webpack(config) {
+    // Skip optional Cloudflare sockets imports used by pg-cloudflare.
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'cloudflare:sockets': false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
