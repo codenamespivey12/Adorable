@@ -43,13 +43,38 @@ export async function POST(req: Request) {
 
   const { message }: { message: CoreMessage } = await req.json();
 
+  const mcpServers: Record<string, any> = {
+    dev_server: {
+      url: new URL(mcpEphemeralUrl),
+    },
+    mcp_docker: {
+      command: "docker",
+      args: [
+        "run",
+        "-i",
+        "--rm",
+        process.env.MCP_DOCKER_IMAGE || "alpine/socat",
+        "STDIO",
+        `TCP:host.docker.internal:${process.env.MCP_DOCKER_PORT || "8811"}`,
+      ],
+    },
+  };
+
+  if (process.env.SUPABASE_ACCESS_TOKEN) {
+    mcpServers["supabase"] = {
+      command: "npx",
+      args: [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        process.env.SUPABASE_ACCESS_TOKEN,
+      ],
+    };
+  }
+
   const mcp = new MCPClient({
     id: crypto.randomUUID(),
-    servers: {
-      dev_server: {
-        url: new URL(mcpEphemeralUrl),
-      },
-    },
+    servers: mcpServers,
   });
 
   const toolsets = await mcp.getToolsets();
