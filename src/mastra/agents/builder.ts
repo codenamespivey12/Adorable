@@ -1,5 +1,5 @@
 import { SYSTEM_MESSAGE } from "@/lib/system";
-import { anthropic } from "@ai-sdk/anthropic";
+import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { PostgresStore, PgVector } from "@mastra/pg";
@@ -34,7 +34,7 @@ export const memory = new Memory({
 
 export const builderAgent = new Agent({
   name: "BuilderAgent",
-  model: anthropic("claude-3-7-sonnet-20250219"),
+  model: openai("o4-mini", { reasoningEffort: "high" }),
   instructions: SYSTEM_MESSAGE,
   memory,
   tools: {
